@@ -27,7 +27,7 @@ from [Order Details] as "o"
 -- đếm số lượng, tính tổng số lượng hàng tồn kho và trung bình giá các sản phẩm có trong bảng product
 -- bản chất của hàng tồn kho là lấy số lượng hàng có trong kho - số lượng hàng đã đc order 
 -- unitsíntock - unitsorder
-select (COUNT(p.UnitsInStock) - COUNT(p.UnitsOnOrder)) as "Số lượng hàng tồn kho", 
+select COUNT((p.UnitsInStock) - (p.UnitsOnOrder)) as "Số lượng hàng tồn kho",
 	   (SUM(p.UnitsInStock) - SUM(UnitsOnOrder)) as "Tổng số lượng của hàng tồn kho",
 	   AVG(p.UnitPrice) as "Giá trị trung bình của các sản phẩm có trong kho"
 from Products as "p";
