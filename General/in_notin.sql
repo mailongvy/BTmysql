@@ -35,3 +35,4 @@ where e.TitleOfCourtesy NOT IN ('Ms.', 'Mrs.');
 select *
 from Customers as "c"
 where c.City IN ('Berlin', 'London', 'Warszawa');
+
