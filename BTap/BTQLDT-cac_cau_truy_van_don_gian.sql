@@ -1,6 +1,4 @@
 ﻿
---Q25. Tìm những giáo viên là trưởng bộ môn.
---Q26. Cho biết họ tên và mức lương của các giáo viên.
 
 -- sử dụng bản quản lí đề tài
 select *
@@ -171,5 +169,27 @@ on gv.MAGV = dt.GVCNDT
 where gv.MABM = 'HTTT' or dt.MADT = '001';
 
 --Q24. Cho biết giáo viên làm việc cùng bộ môn với giáo viên 002.
+select gv.*
+from GIAOVIEN as "gv"
+join BOMON as "bm" on gv.MABM = bm.MABM
+where gv.MABM = (select MABM 
+				 from GIAOVIEN
+				 where MAGV = '002'
+				 
+)
+except
+select *
+from GIAOVIEN 
+where MAGV = '002';
 
+--Q25. Tìm những giáo viên là trưởng bộ môn.
+select gv.*
+from GIAOVIEN as "gv"
+join BOMON as "bm" on gv.MAGV = bm.TRUONGBM
+order by gv.MAGV asc;
+
+
+--Q26. Cho biết họ tên và mức lương của các giáo viên.
+select gv.HOTEN, gv.LUONG
+from GIAOVIEN as gv;
 
