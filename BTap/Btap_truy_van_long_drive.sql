@@ -2,14 +2,6 @@
 
 
 
---Q50. Tìm những giáo viên có lương lớn hơn lương của tất cả giáo viên thuộc bộ môn “Hệ thống thông tin”
---Q51. Cho biết tên khoa có đông giáo viên nhất
---Q52. Cho biết họ tên giáo viên chủ nhiệm nhiều đề tài nhất
---Q53. Cho biết mã bộ môn có nhiều giáo viên nhất
---Q54. Cho biết tên giáo viên và tên bộ môn của giáo viên tham gia nhiều đề tài nhất.
---Q55. Cho biết tên giáo viên tham gia nhiều đề tài nhất của bộ môn HTTT.
---Q56. Cho biết tên giáo viên và tên bộ môn của giáo viên có nhiều người thân nhất.
---Q57. Cho biết tên trưởng bộ môn mà chủ nhiệm nhiều đề tài nhất.
 
 select *
 from GIAOVIEN as "gv";
@@ -170,6 +162,106 @@ where gv.MAGV IN (
 	join THAMGIADT as tgdt on gv1.MAGV = tgdt.MAGV
 )
 
---Q49. Tìm những giáo viên có lương lớn hơn lương của ít nhất một giáo viên bộ môn “Công nghệ phần mềm”
+--Q50. Tìm những giáo viên có lương lớn hơn lương của tất cả giáo viên thuộc bộ môn “Hệ thống thông tin”
+select gv.HOTEN
+from GIAOVIEN as gv
+where gv.MABM <> 'HTTT' and gv.LUONG >= (
+		select MAX(gv2.LUONG)
+		from GIAOVIEN as gv2
+		where gv2.MABM = 'HTTT'
+) 
+
+--Q51. Cho biết tên khoa có đông giáo viên nhất
+select k.TENKHOA, COUNT(gv.HOTEN)
+from KHOA as k
+join BOMON as bm on bm.MAKHOA = k.MAKHOA
+join GIAOVIEN as gv on gv.MABM = bm.MABM
+group by k.TENKHOA
+having COUNT(gv.HOTEN) >= ALL (
+	select COUNT(*)
+	from GIAOVIEN as gv1
+	join BOMON as bm1 on bm1.MABM = gv1.MABM
+	join KHOA as k1 on k1.MAKHOA = bm1.MAKHOA
+	group by k1.TENKHOA
+)
+
+
+--Q52. Cho biết họ tên giáo viên chủ nhiệm nhiều đề tài nhất
+select gv.MAGV, gv.HOTEN, COUNT(dt.MADT)
+from GIAOVIEN as "gv"
+join DETAI as dt on gv.MAGV = dt.GVCNDT
+group by gv.MAGV, gv.HOTEN
+having COUNT(dt.MADT) >= ALL (
+	select COUNT(dt1.MADT)
+	from DETAI as dt1
+	join GIAOVIEN as gv1 on gv1.MAGV = dt1.GVCNDT
+	group by gv1.MAGV
+)
+
+--Q53. Cho biết mã bộ môn có nhiều giáo viên nhất
+select gv.MABM, COUNT(gv.MAGV) as "Số lượng giáo viên của từng bộ môn"
+from GIAOVIEN as gv
+group by gv.MABM
+having COUNT(gv.MAGV) >= ALL (
+	select COUNT(gv1.MAGV)
+	from GIAOVIEN as "gv1"
+	group by gv1.MABM
+)
+
+--Q54. Cho biết tên giáo viên và tên bộ môn của giáo viên tham gia nhiều đề tài nhất.
+select gv.MAGV, gv.HOTEN, bm.TENBOMON,COUNT(tgdt.MADT) 
+from GIAOVIEN as gv
+join THAMGIADT as tgdt on gv.MAGV = tgdt.MAGV
+join BOMON as bm on bm.MABM = gv.MABM
+group by gv.MAGV, gv.HOTEN, bm.TENBOMON
+having COUNT(tgdt.MADT) >= ALL (
+	select COUNT(tgdt1.MADT)
+	from THAMGIADT as tgdt1
+	join GIAOVIEN as gv1 on gv1.MAGV = tgdt1.MAGV
+	group by gv1.MAGV
+)
+
+--Q55. Cho biết tên giáo viên tham gia nhiều đề tài nhất của bộ môn HTTT.
+select gv.MAGV, gv.HOTEN, bm.TENBOMON,COUNT(tgdt.MADT) 
+from ( 
+	select gv2.*
+	from GIAOVIEN as gv2
+	where gv2.MABM = 'HTTT'
+)
+as gv
+join THAMGIADT as tgdt on gv.MAGV = tgdt.MAGV
+join BOMON as bm on bm.MABM = gv.MABM
+group by gv.MAGV, gv.HOTEN, bm.TENBOMON
+having COUNT(tgdt.MADT) >= ALL (
+	select COUNT(tgdt1.MADT)
+	from THAMGIADT as tgdt1
+	join GIAOVIEN as gv1 on gv1.MAGV = tgdt1.MAGV
+	group by gv1.MAGV
+)
+
+--Q56. Cho biết tên giáo viên và tên bộ môn của giáo viên có nhiều người thân nhất.
+select gv.MAGV, gv.HOTEN, bm.TENBOMON, COUNT(nt.TEN) as "Số lượng người thân"
+from GIAOVIEN as gv
+join NGUOITHAN as nt on gv.MAGV = nt.MAGV
+join BOMON as bm on gv.MABM = bm.MABM
+group by gv.MAGV, gv.HOTEN, bm.TENBOMON
+having COUNT(nt.TEN) >= ALL (
+	select COUNT(nt1.TEN)
+	from NGUOITHAN as nt1
+	join GIAOVIEN as gv1 on gv1.MAGV = nt1.MAGV
+	group by gv1.MAGV
+)
+
+--Q57. Cho biết tên trưởng bộ môn mà chủ nhiệm nhiều đề tài nhất.
+select gv.MAGV, gv.HOTEN, COUNT(dt.TENDT) as "số lượng đề tài làm chủ nhiệm"
+from GIAOVIEN as  gv
+join DETAI as dt on dt.GVCNDT = gv.MAGV
+group by gv.MAGV, gv.HOTEN
+having COUNT(dt.TENDT) >= all (
+	select COUNT(dt1.TENDT)
+	from DETAI as dt1
+	join GIAOVIEN as gv1 on gv1.MAGV = dt1.GVCNDT
+	group by gv1.MAGV
+)
 
 
