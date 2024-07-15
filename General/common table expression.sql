@@ -1,4 +1,4 @@
-﻿-- common table expression (cte): được sử dụng để tạo các bảng tạm thời và sử dụng nó trong các truy vấn sau đó
+﻿ -- common table expression (cte): được sử dụng để tạo các bảng tạm thời và sử dụng nó trong các truy vấn sau đó
 -- giúp làm cho câu truy vấn trở nên dễ đọc và dễ quản lí hơn 
 -- with tên_cte (cột 1, cột 2, .... ) as (
 -- truy van de dinh nghia cte
