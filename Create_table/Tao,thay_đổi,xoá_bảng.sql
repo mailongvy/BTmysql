@@ -41,77 +41,54 @@ CREATE TABLE KhachHang(
 -- alter( có thể thay đổi thành modify) column column_name datatype
 
 ALTER TABLE NhanVien
+add Email varchar(100);
+
+
+
+CREATE TABLE Sinhvien(
+	MaSV INT NOT NULL PRIMARY KEY,
+	HoTen VARCHAR(50) NOT NULL,
+	Lop VARCHAR(20),
+	Nganh VARCHAR(20),
+	DiemTB FLOAT
+	);
+
+-- BT2: Các yêu cầu sau:
+-- 2: Thêm cột Email vào bảng SinhVien với kiểu dữ liệu VARCHAR(100).
+ALTER TABLE dbo.Sinhvien
 ADD Email VARCHAR(100);
 
-ALTER TABLE NhanVien
-ALTER column HoTen VARCHAR(100);
+-- 3: Sửa đổi kiểu dữ liệu của cột DiemTB trong bảng SinhVien thành kiểu dữ liệu DECIMAL(2,1).
+ALTER TABLE dbo.Sinhvien
+ALTER COLUMN DiemTB DECIMAL(2,1);
 
-ALTER TABLE NhanVien
-ADD CONSTRAINT NgaySinh Check (NgaySinh <= GETDATE());
-
--- xoá dữ liệu của bảng và xoá bảng
--- xoá tất cả dữ liệu của bảng nhưng không xoá bảng
--- dùng TRUNCATE TABLE [tên bảng]
--- xoá bảng hoàn toàn bao gồm cả cấu trúc dữ liệu 
--- drop table [tên bảng]
-
-TRUNCATE TABLE NhanVien;
-
-DROP TABLE NhanVien;
-
--- tạo bảng sinh vien với cấc cột sau
--- MaSV int, khoá chính khổng thể chứa giá trị NULL
--- HoTen: VARCHAR(50), không thể chứa giá trị null
--- Lop: Varchar(20)
--- Nganh: Varchar(20)
--- DiẻmTB: Float
-
-
-
--- xoá bảng sinh vien 
-
-
-CREATE TABLE SinhVien (
-	MaSV INT NOT NULL PRIMARY KEY,
-	HoTen VARCHAR(50) NOT NULL,
-	Lop VARCHAR(20),
-	Nganh VARCHAR(20),
-	DiemTB Float
-);
-
--- thêm cột email vào bảng sinh vien với kiểu dữ liệu VARCHAR(100)
-ALTER TABLE SinhVien
-ADD Email Varchar(100);
-
--- sửa đổi kiểu dữ liệu của cột điểmtb trong bảng sinh viên thành kiểu dữ liệu DECIMAL(2, 1)
-ALTER TABLE SinhVien
-ALTER COLUMN DiemTB DECIMAL(2, 1);
-
--- Xoa cot nganh  khoi bảng Sinh vien
-ALTER TABLE SinhVien
+-- 4: Xóa cột Nganh khỏi bảng SinhVien.
+ALTER TABLE dbo.Sinhvien
 DROP COLUMN Nganh;
 
--- them ràng buộc kiểm tra cho cột DiemTB trong bảng sinh vien để giá trị >= 0 và <= 10
-ALTER TABLE SinhVien
-ADD CONSTRAINT DiemTB CHECK (DiemTB >= 0 AND DiemTB <= 10.0);
+-- 5: Thêm ràng buộc kiểm tra cho cột DiemTB trong bảng SinhVien để giá trị phải lớn hơn hoặc bằng 0.
+ALTER TABLE dbo.Sinhvien
+ADD CONSTRAINT DiemTBCheck CHECK (DiemTB >= 0 AND DiemTB <= 10);
 
--- thêm ràng buộc duy nhất cho cột mã MaSV trong bảng sinh vien
-ALTER TABLE SinhVien
-ADD CONSTRAINT MaSV UNIQUE(MaSV);
+-- 6: Thêm ràng buộc duy nhất cho cột MaSV trong bảng SinhVien.
+ALTER TABLE dbo.Sinhvien
+ADD CONSTRAINT MaSVUnique UNIQUE(MaSV);
 
--- thêm dữ liệu vào bảng sinh vien với một số thông tin thủ công
--- xoá dũ liệu bảng sinh vien
-TRUNCATE TABLE SinhVien;
+-- 7: Thêm dữ liệu vào bảng SinhVien với một số thông tin thủ công.
 
--- xoá bảng sinh vien 
-DROP TABLE SinhVien;
+-- 8: Xóa dữ liệu trong bảng SinhVien.
+TRUNCATE TABLE dbo.Sinhvien;
 
--- tạo lại bảng sinh viên với cấu trúc ban đầu
-CREATE TABLE SinhVien (
+-- 9: Xóa bảng SinhVien.
+DROP TABLE dbo.Sinhvien;
+
+-- 10: Tạo lại bảng SinhVien với cấu trúc ban đầu.
+CREATE TABLE Sinhvien(
 	MaSV INT NOT NULL PRIMARY KEY,
 	HoTen VARCHAR(50) NOT NULL,
 	Lop VARCHAR(20),
 	Nganh VARCHAR(20),
-	DiemTB Float
-);
+	DiemTB FLOAT
+	);
+
 
